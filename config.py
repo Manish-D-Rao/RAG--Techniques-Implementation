@@ -20,6 +20,13 @@ def _get_int(name: str, default: int) -> int:
 
 PROJECT_ROOT = Path(__file__).parent
 
+
+DOCUMENTS_DIR = PROJECT_ROOT / "data" / "documents"
+EVALUATION_DIR = PROJECT_ROOT / "data" / "evaluation"
+VECTORSTORE_DIR = PROJECT_ROOT / "vectorstore"
+FAISS_DIR = VECTORSTORE_DIR / "faiss"
+DOC_STORE_PATH = VECTORSTORE_DIR / "doc_store.json"
+
 # OpenAI (required)
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 NEXUS_BASE_URL = os.getenv("NEXUS_BASE_URL")
@@ -62,10 +69,19 @@ def check_openai_api_key() -> bool:
     return True
 
 
-def check_pinecone_api_key() -> bool:
+def check_pinecone_config() -> bool:
     """Validate that the Pinecone API key is set when using Pinecone."""
     if VECTOR_DB == "pinecone" and not PINECONE_API_KEY:
         raise RuntimeError("PINECONE_API_KEY is required when VECTOR_DB=pinecone")
     if VECTOR_DB == "pinecone" and not PINECONE_INDEX_NAME:
             raise RuntimeError("PINECONE_INDEX_NAME is required when VECTOR_DB=pinecone")
     return True
+
+def describe_settings() -> dict:
+    return {
+        "Chat Model": OPENAI_CHAT_MODEL,
+        "Embedding Model": OPENAI_EMBEDDING_MODEL,
+        "VectorDB": VECTOR_DB,
+        "Parent Chunk Size": PARENT_CHUNK_SIZE,
+        "Child Chunk Size": CHILD_CHUNK_SIZE,
+    }
